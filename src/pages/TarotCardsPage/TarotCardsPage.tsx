@@ -42,10 +42,38 @@ export const TarotCardsPage: FC = () => {
   // Выбор случайных карт при загрузке
   useEffect(() => {
     const shuffled = [...tarotCards].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, cardCount).map(card => ({
-      ...card,
-      image: `/tarot-cards/${String(card.id - 1).padStart(2, '0')}-${card.name}.png` // Путь к изображениям карт
-    }));
+    const selected = shuffled.slice(0, cardCount).map(card => {
+      // Map card names to their correct English names for the image files
+      const cardNameMap: { [key: number]: string } = {
+        1: 'TheFool',
+        2: 'TheMagician',
+        3: 'TheHighPriestess',
+        4: 'TheEmpress',
+        5: 'TheEmperor',
+        6: 'TheHierophant',
+        7: 'TheLovers',
+        8: 'TheChariot',
+        9: 'Strength',
+        10: 'TheHermit',
+        11: 'WheelOfFortune',
+        12: 'Justice',
+        13: 'TheHangedMan',
+        14: 'Death',
+        15: 'Temperance',
+        16: 'TheDevil',
+        17: 'TheTower',
+        18: 'TheStar',
+        19: 'TheMoon',
+        20: 'TheSun',
+        21: 'Judgement',
+        22: 'TheWorld'
+      };
+
+      return {
+        ...card,
+        image: `/tarot-cards/${String(card.id - 1).padStart(2, '0')}-${cardNameMap[card.id]}.png` // Путь к изображениям карт
+      };
+    });
     setSelectedCards(selected);
   }, [cardCount]);
 
@@ -90,7 +118,15 @@ export const TarotCardsPage: FC = () => {
 
   return (
     <Page>
-      <List>
+      <div style={{
+        backgroundImage: 'url(/tarot-cards/background.webp)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        minHeight: '100vh',
+        padding: '20px 0'
+      }}>
+        <List>
         <Section header={`Расклад: ${theme}`}>
           <div style={{
             display: 'flex',
@@ -99,72 +135,180 @@ export const TarotCardsPage: FC = () => {
             padding: '16px',
             gap: '16px'
           }}>
-            {selectedCards.slice(0, revealedCards).map((card, index) => (
-              <div
-                key={card.id}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  opacity: 1,
-                  transition: 'opacity 0.5s ease-in-out'
-                }}
-              >
-                <div
-                  style={{
-                    width: '120px',
-                    height: '200px',
-                    backgroundColor: '#f0f0f0',
-                    border: '1px solid #ccc',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    overflow: 'hidden'
-                  }}
-                >
-                  {revealedCards > index ? (
-                    <img
-                      src={card.image}
-                      alt={card.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: '48px' }}>❓</span>
-                  )}
-                </div>
-                <div style={{ marginTop: '8px', fontWeight: 'bold' }}>{card.name}</div>
+            {/* First row: up to 3 cards */}
+            {selectedCards.length > 0 && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: '16px',
+                width: '100%'
+              }}>
+                {selectedCards.slice(0, 3).map((card, index) => (
+                  <div
+                    key={card.id}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      opacity: 1,
+                      transition: 'opacity 0.5s ease-in-out'
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '100px',
+                        height: '160px',
+                        backgroundColor: '#f0f0f0',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'hidden'
+                      }}
+                    >
+                      {revealedCards > index ? (
+                        <img
+                          src={card.image}
+                          alt={card.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <span style={{ fontSize: '48px' }}>❓</span>
+                      )}
+                    </div>
+                    <div style={{ marginTop: '8px', fontWeight: 'bold', fontSize: '14px' }}>{card.name}</div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
             
-            {/* Заглушка для карт, которые еще не открылись */}
-            {Array.from({ length: selectedCards.length - revealedCards }).map((_, index) => (
-              <div
-                key={`hidden-${index}`}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center'
-                }}
-              >
-                <div
-                  style={{
-                    width: '120px',
-                    height: '200px',
-                    backgroundColor: '#d0d0d0',
-                    border: '1px solid #aaa',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <span style={{ fontSize: '48px' }}>❓</span>
-                </div>
-                <div style={{ marginTop: '8px', fontWeight: 'bold', color: '#aaa' }}>Карта {revealedCards + index + 1}</div>
+            {/* Remaining cards in second row */}
+            {selectedCards.length > 3 && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: '16px',
+                width: '100%'
+              }}>
+                {selectedCards.slice(3, revealedCards).map((card, index) => {
+                  const globalIndex = index + 3; // Adjust index to match the original position
+                  return (
+                    <div
+                      key={card.id}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        opacity: 1,
+                        transition: 'opacity 0.5s ease-in-out'
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '100px',
+                          height: '160px',
+                          backgroundColor: '#f0f0f0',
+                          border: '1px solid #ccc',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        {revealedCards > globalIndex ? (
+                          <img
+                            src={card.image}
+                            alt={card.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <span style={{ fontSize: '48px' }}>❓</span>
+                        )}
+                      </div>
+                      <div style={{ marginTop: '8px', fontWeight: 'bold', fontSize: '14px' }}>{card.name}</div>
+                    </div>
+                  );
+                })}
+                
+                {/* Hidden cards placeholder for second row */}
+                {Array.from({ length: selectedCards.length - Math.max(revealedCards, 3) }).map((_, index) => {
+                  const globalIndex = index + Math.max(revealedCards, 3);
+                  return (
+                    <div
+                      key={`hidden-${globalIndex}`}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '100px',
+                          height: '160px',
+                          backgroundColor: '#d0d0d0',
+                          border: '1px solid #aaa',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <span style={{ fontSize: '48px' }}>❓</span>
+                      </div>
+                      <div style={{ marginTop: '8px', fontWeight: 'bold', color: '#aaa', fontSize: '14px' }}>Карта {globalIndex + 1}</div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
+            )}
+            
+            {/* Handle case where we have 1-3 cards */}
+            {selectedCards.length <= 3 && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: '16px',
+                width: '100%'
+              }}>
+                {Array.from({ length: selectedCards.length - revealedCards }).map((_, index) => {
+                  const globalIndex = index + revealedCards;
+                  return (
+                    <div
+                      key={`hidden-${globalIndex}`}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '100px',
+                          height: '160px',
+                          backgroundColor: '#d0d0d0',
+                          border: '1px solid #aaa',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <span style={{ fontSize: '48px' }}>❓</span>
+                      </div>
+                      <div style={{ marginTop: '8px', fontWeight: 'bold', color: '#aaa', fontSize: '14px' }}>Карта {globalIndex + 1}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
           
           {showInterpretation && (
@@ -183,6 +327,7 @@ export const TarotCardsPage: FC = () => {
           )}
         </Section>
       </List>
-    </Page>
+    </div>
+  </Page>
   );
 };
