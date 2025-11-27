@@ -69,9 +69,13 @@ export const TarotCardsPage: FC = () => {
         22: 'TheWorld'
       };
 
+      // Get the correct filename based on the card ID
+      const cardFileName = `${String(card.id - 1).padStart(2, '0')}-${cardNameMap[card.id]}.png`;
+      
       return {
         ...card,
-        image: `/tarot-cards/${String(card.id - 1).padStart(2, '0')}-${cardNameMap[card.id]}.png` // Путь к изображениям карт
+        image: `/tarot-cards/${cardFileName}`, // Путь к изображениям карт
+        imageFileName: cardFileName // Store the filename to check if it exists
       };
     });
     setSelectedCards(selected);
@@ -144,7 +148,7 @@ export const TarotCardsPage: FC = () => {
                 gap: '16px',
                 width: '100%'
               }}>
-                {selectedCards.slice(0, 3).map((card, index) => (
+                {selectedCards.slice(0, Math.min(3, selectedCards.length)).map((card, index) => (
                   <div
                     key={card.id}
                     style={{
@@ -173,6 +177,11 @@ export const TarotCardsPage: FC = () => {
                           src={card.image}
                           alt={card.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null; // Prevent infinite loop
+                            target.src = '/tarot-cards/CardBacks.png'; // Fallback image
+                          }}
                         />
                       ) : (
                         <span style={{ fontSize: '48px' }}>❓</span>
@@ -193,7 +202,7 @@ export const TarotCardsPage: FC = () => {
                 gap: '16px',
                 width: '100%'
               }}>
-                {selectedCards.slice(3, revealedCards).map((card, index) => {
+                {selectedCards.slice(3, Math.min(revealedCards, selectedCards.length)).map((card, index) => {
                   const globalIndex = index + 3; // Adjust index to match the original position
                   return (
                     <div
@@ -224,6 +233,11 @@ export const TarotCardsPage: FC = () => {
                             src={card.image}
                             alt={card.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.onerror = null; // Prevent infinite loop
+                              target.src = '/tarot-cards/CardBacks.png'; // Fallback image
+                            }}
                           />
                         ) : (
                           <span style={{ fontSize: '48px' }}>❓</span>
@@ -268,8 +282,8 @@ export const TarotCardsPage: FC = () => {
               </div>
             )}
             
-            {/* Handle case where we have 1-3 cards */}
-            {selectedCards.length <= 3 && (
+            {/* Handle case where we have 1-3 cards - only show hidden cards if there are more hidden than shown */}
+            {selectedCards.length <= 3 && revealedCards < selectedCards.length && (
               <div style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -290,9 +304,9 @@ export const TarotCardsPage: FC = () => {
                     >
                       <div
                         style={{
-                          width: '100px',
+                          width: '10px',
                           height: '160px',
-                          backgroundColor: '#d0d0d0',
+                          backgroundColor: '#d0d0',
                           border: '1px solid #aaa',
                           borderRadius: '8px',
                           display: 'flex',
