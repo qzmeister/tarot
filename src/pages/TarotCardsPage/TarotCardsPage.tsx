@@ -44,7 +44,7 @@ export const TarotCardsPage: FC = () => {
     const shuffled = [...tarotCards].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, cardCount).map(card => ({
       ...card,
-      image: `/tarot-cards/${card.id}.jpg` // Путь к изображениям карт
+      image: `/tarot-cards/${String(card.id - 1).padStart(2, '0')}-${card.name}.png` // Путь к изображениям карт
     }));
     setSelectedCards(selected);
   }, [cardCount]);
