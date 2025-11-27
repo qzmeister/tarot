@@ -117,15 +117,15 @@ export const TarotCardsPage: FC = () => {
  };
 
   return (
-    <Page>
-      <div style={{
-        backgroundImage: 'url(/tarot-cards/background.webp)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        minHeight: '100vh',
-        padding: '20px 0'
-      }}>
+    <div style={{
+      backgroundImage: 'url(/tarot-cards/background.webp)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      minHeight: '100vh',
+      padding: '20px 0'
+    }}>
+      <Page>
         <List>
         <Section header={`Расклад: ${theme}`}>
           <div style={{
@@ -327,7 +327,7 @@ export const TarotCardsPage: FC = () => {
           )}
         </Section>
       </List>
-    </div>
-  </Page>
+    </Page>
+  </div>
   );
 };
