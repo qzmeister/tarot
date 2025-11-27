@@ -79,7 +79,7 @@ export const TarotCardsPage: FC = () => {
       };
     });
     setSelectedCards(selected);
-  }, [cardCount]);
+ }, [cardCount]);
 
   // Постепенное открытие карт
   useEffect(() => {
@@ -174,13 +174,16 @@ export const TarotCardsPage: FC = () => {
                     >
                       {revealedCards > index ? (
                         <img
-                          src={`/tarot-cards/${card.image}`}
+                          src={card.image ? `/tarot-cards/${card.image}?t=${Date.now()}` : '/tarot-cards/CardBacks.png'}
                           alt={card.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.onerror = null; // Prevent infinite loop
                             target.src = '/tarot-cards/CardBacks.png'; // Fallback image
+                          }}
+                          onLoad={(e) => {
+                            // Optional: Add any onLoad logic if needed
                           }}
                         />
                       ) : (
@@ -230,13 +233,16 @@ export const TarotCardsPage: FC = () => {
                       >
                         {revealedCards > globalIndex ? (
                           <img
-                            src={`/tarot-cards/${card.image}`}
+                            src={card.image ? `/tarot-cards/${card.image}?t=${Date.now()}` : '/tarot-cards/CardBacks.png'}
                             alt={card.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.onerror = null; // Prevent infinite loop
                               target.src = '/tarot-cards/CardBacks.png'; // Fallback image
+                            }}
+                            onLoad={(e) => {
+                              // Optional: Add any onLoad logic if needed
                             }}
                           />
                         ) : (
