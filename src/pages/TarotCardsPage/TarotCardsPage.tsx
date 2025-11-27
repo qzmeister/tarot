@@ -182,7 +182,7 @@ export const TarotCardsPage: FC = () => {
                             target.onerror = null; // Prevent infinite loop
                             target.src = '/tarot-cards/CardBacks.png'; // Fallback image
                           }}
-                          onLoad={(e) => {
+                          onLoad={() => {
                             // Optional: Add any onLoad logic if needed
                           }}
                         />
@@ -241,7 +241,7 @@ export const TarotCardsPage: FC = () => {
                               target.onerror = null; // Prevent infinite loop
                               target.src = '/tarot-cards/CardBacks.png'; // Fallback image
                             }}
-                            onLoad={(e) => {
+                            onLoad={() => {
                               // Optional: Add any onLoad logic if needed
                             }}
                           />
