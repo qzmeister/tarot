@@ -74,7 +74,7 @@ export const TarotCardsPage: FC = () => {
       
       return {
         ...card,
-        image: `/tarot-cards/${cardFileName}`, // Путь к изображениям карт
+        image: cardFileName, // Store just the filename, we'll add the full path when rendering
         imageFileName: cardFileName // Store the filename to check if it exists
       };
     });
@@ -174,7 +174,7 @@ export const TarotCardsPage: FC = () => {
                     >
                       {revealedCards > index ? (
                         <img
-                          src={card.image}
+                          src={`/tarot-cards/${card.image}`}
                           alt={card.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           onError={(e) => {
@@ -230,7 +230,7 @@ export const TarotCardsPage: FC = () => {
                       >
                         {revealedCards > globalIndex ? (
                           <img
-                            src={card.image}
+                            src={`/tarot-cards/${card.image}`}
                             alt={card.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             onError={(e) => {
